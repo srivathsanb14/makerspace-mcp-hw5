@@ -1,0 +1,40 @@
+### Inspector: original tool daily_heating_energy
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "{\n  \"heat_demand_kWh_per_day\": 97.23,\n  \"COP\": 4.03,\n  \"electricity_kWh_per_day\": 24.11,\n  \"cost_per_day\": 4.1,\n  \"UA_used_W_per_K\": 253.2,\n  \"carnot_fraction_used\": 0.451,\n  \"note\": \"UA from discovered UA/C times assumed C = 5.0 MJ/K\",\n  \"warnings\": []\n}"
+    }
+  ],
+  "isError": false
+}
+### Inspector: NEW tool part_load_check
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "{\n  \"bending_stress_MPa\": 14.06,\n  \"base_strength_MPa\": 45.0,\n  \"allowable_stress_MPa\": 22.5,\n  \"knockdown_orientation\": 0.5,\n  \"knockdown_resume\": 1.0,\n  \"safety_factor\": 1.6,\n  \"passes_required_safety_factor\": false,\n  \"warnings\": [\n    \"Below the required safety factor of 2.0.\"\n  ],\n  \"assumptions\": \"Rectangular solid section; static load; typical room-temperature XY tensile strength; no stress concentrations or infill reduction. Not a substitute for a physical load test.\"\n}"
+    }
+  ],
+  "isError": false
+}
+### Inspector: NEW tool failure_cost_ledger
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "{\n  \"jobs_per_week\": 15.0,\n  \"failed_jobs_per_week\": 2.07,\n  \"printer_hours_wasted_per_week\": 6.2,\n  \"material_wasted_kg_per_week\": 0.12,\n  \"material_cost_per_week\": 2.48,\n  \"printer_time_cost_per_week\": 9.32,\n  \"total_failure_cost_per_week\": 11.8,\n  \"fleet_utilization_lost_pct\": 1.23,\n  \"what_if_resume\": {\n    \"jobs_saved_per_week\": 1.04,\n    \"printer_hours_saved_per_week\": 2.6,\n    \"material_saved_kg_per_week\": 0.06,\n    \"dollars_saved_per_week\": 5.12\n  },\n  \"warnings\": []\n}"
+    }
+  ],
+  "isError": false
+}
+### Inspector: INVALID input (T_out_C=25)
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "Error executing tool daily_heating_energy: 1 validation error for daily_heating_energyArguments\nT_out_C\n  Input should be less than or equal to 20 [type=less_than_equal, input_value=25, input_type=int]\n    For further information visit https://errors.pydantic.dev/2.14/v/less_than_equal"
+    }
+  ],
+  "isError": true
+}

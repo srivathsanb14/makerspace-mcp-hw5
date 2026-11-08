@@ -1,0 +1,131 @@
+tools/list -> discover_thermal_model, discover_cop_law, daily_heating_energy, part_load_check, failure_cost_ledger
+
+### discover_thermal_model (original)
+call_tool(discover_thermal_model, {"threshold": 0.1, "window_pts": 24})
+isError=False
+{
+  "equation_K_per_h": "dT_in/dt = 0.02767 + -0.1823*T_in + 0.1811*T_out + 3.597*u + 0.007205*solar",
+  "coefficients": {
+    "1": 0.02767,
+    "T_in": -0.18226,
+    "T_out": 0.18108,
+    "u": 3.59658,
+    "solar": 0.00721
+  },
+  "R2": 0.9975,
+  "n_terms": 5,
+  "warnings": [
+    "Extra terms kept: ['1']. Raise threshold if they are tiny."
+  ],
+  "UA_over_C_per_h": 0.1823,
+  "time_constant_h": 5.49,
+  "heater_gain_K_per_h": 3.597,
+  "solar_gain_K_per_h_per_Wm2": 0.007205
+}
+
+### discover_cop_law (original)
+call_tool(discover_cop_law, {})
+isError=False
+{
+  "best_formula": "COP = a*T_hot/dT",
+  "best_params": [
+    0.4507
+  ],
+  "n_points": 150,
+  "T_out_range_C": [
+    -14.8,
+    14.9
+  ],
+  "T_supply_range_C": [
+    30.4,
+    55.0
+  ],
+  "fraction_of_carnot": 0.4507,
+  "runner_up": {
+    "formula": "COP = a + b*T_hot/dT",
+    "params": [
+      -0.0366,
+      0.4548
+    ],
+    "R2": 0.9925,
+    "RMSE": 0.0942,
+    "BIC": -698.5
+  }
+}
+
+### daily_heating_energy (original)
+call_tool(daily_heating_energy, {"T_out_C": 5, "T_set_C": 21, "T_supply_C": 40, "price_per_kWh": 0.17})
+isError=False
+{
+  "heat_demand_kWh_per_day": 97.23,
+  "COP": 4.03,
+  "electricity_kWh_per_day": 24.11,
+  "cost_per_day": 4.1,
+  "UA_used_W_per_K": 253.2,
+  "carnot_fraction_used": 0.451,
+  "note": "UA from discovered UA/C times assumed C = 5.0 MJ/K",
+  "warnings": []
+}
+
+### part_load_check (NEW)
+call_tool(part_load_check, {"material": "PLA", "load_N": 40, "span_mm": 80, "width_mm": 20, "height_mm": 10, "support": "cantilever", "orientation": "flat", "resumed_after_pause": "yes_no_reheat"})
+isError=False
+{
+  "bending_stress_MPa": 9.6,
+  "base_strength_MPa": 50.0,
+  "allowable_stress_MPa": 26.0,
+  "knockdown_orientation": 1.0,
+  "knockdown_resume": 0.52,
+  "safety_factor": 2.71,
+  "passes_required_safety_factor": true,
+  "warnings": [
+    "Resumed without reheating: strength cut by 48% (HW4, Sinha & Meisel 2018). Reheat or reprint.",
+    "Resume knock-down is an average from one study; verify with a physical test of a rescued part."
+  ],
+  "assumptions": "Rectangular solid section; static load; typical room-temperature XY tensile strength; no stress concentrations or infill reduction. Not a substitute for a physical load test."
+}
+
+### failure_cost_ledger (NEW)
+call_tool(failure_cost_ledger, {"n_printers": 20, "failure_rate": 0.138, "recoverable_fraction": 0.5})
+isError=False
+{
+  "jobs_per_week": 160.0,
+  "failed_jobs_per_week": 22.08,
+  "printer_hours_wasted_per_week": 66.2,
+  "material_wasted_kg_per_week": 1.32,
+  "material_cost_per_week": 26.5,
+  "printer_time_cost_per_week": 99.36,
+  "total_failure_cost_per_week": 125.86,
+  "fleet_utilization_lost_pct": 1.97,
+  "what_if_resume": {
+    "jobs_saved_per_week": 11.04,
+    "printer_hours_saved_per_week": 27.6,
+    "material_saved_kg_per_week": 0.66,
+    "dollars_saved_per_week": 54.65
+  },
+  "warnings": []
+}
+
+### INVALID: schema range (T_out_C=25 > max 20)
+call_tool(daily_heating_energy, {"T_out_C": 25})
+isError=True
+Error executing tool daily_heating_energy: 1 validation error for daily_heating_energyArguments
+T_out_C
+  Input should be less than or equal to 20 [type=less_than_equal, input_value=25, input_type=int]
+    For further information visit https://errors.pydantic.dev/2.14/v/less_than_equal
+
+### INVALID: unknown material (enum)
+call_tool(part_load_check, {"material": "WOOD", "load_N": 40, "span_mm": 80, "width_mm": 20, "height_mm": 10})
+isError=True
+Error executing tool part_load_check: 1 validation error for part_load_checkArguments
+material
+  Input should be 'PLA', 'PETG', 'ABS' or 'NYLON' [type=literal_error, input_value='WOOD', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.14/v/literal_error
+
+### INVALID: schema range (failure_rate=0.9 > 0.6)
+call_tool(failure_cost_ledger, {"n_printers": 20, "failure_rate": 0.9})
+isError=True
+Error executing tool failure_cost_ledger: 1 validation error for failure_cost_ledgerArguments
+failure_rate
+  Input should be less than or equal to 0.6 [type=less_than_equal, input_value=0.9, input_type=float]
+    For further information visit https://errors.pydantic.dev/2.14/v/less_than_equal

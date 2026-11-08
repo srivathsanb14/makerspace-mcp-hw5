@@ -1,0 +1,3 @@
+mcp[cli]>=1.2,<2
+numpy
+pydantic>=2
